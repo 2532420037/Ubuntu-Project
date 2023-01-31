@@ -27,6 +27,9 @@ typedef struct FD { //文件描述符
 FD fd_[4097]; //文件描述符的集合
 
 int JudgeOfPathname(const char *pathname) { //判断pathname的合法性
+    if (pathname == NULL) {
+        return 0;
+    }
     if (strlen(pathname) > 1024) {
         return 0;
     } else if (pathname[0] != '/') {
@@ -427,6 +430,9 @@ int rclose(int fd) {
 
 ssize_t rwrite(int fd, const void *buf, size_t count) {
   // TODO();
+  if (buf == NULL) {
+      return -1;
+  }
   if ((fd_[fd].f != NULL) && (fd_[fd].f->type == FILE_NODE) && ((fd_[fd].flags == 1) || (fd_[fd].flags == 2))) {
       char *temp = malloc(count);
       if (count <= strlen(buf)) {
@@ -465,6 +471,9 @@ ssize_t rwrite(int fd, const void *buf, size_t count) {
 
 ssize_t rread(int fd, void *buf, size_t count) {
   // TODO();
+  if (buf == NULL) {
+      return -1;
+  }
   if ((fd_[fd].f != NULL) && (fd_[fd].f->type == FILE_NODE) && ((fd_[fd].flags == 0) || (fd_[fd].flags == 2))) {
       int gg;
       if (fd_[fd].offset + count > fd_[fd].f->size) {
