@@ -130,13 +130,24 @@ int JudgeOfPathname(const char *pathname) { //判断pathname的合法性
                 }
                 node *tp = all->dirents;
                 for (int j = 0; j < all->nrde; j++) {
-                    if (strcmp(name[i], tp->name) == 0) {
-                        pre = all;
-                        all = tp;
-                        aa = 1;
-                        break;
+                    if (i < num1 - 1) {
+                        if ((strcmp(name[i], tp->name) == 0) && (tp->type == DIR_NODE)) {
+                            pre = all;
+                            all = tp;
+                            aa = 1;
+                            break;
+                        } else {
+                            tp = tp->same_level;
+                        }
                     } else {
-                        tp = tp->same_level;
+                        if (strcmp(name[i], tp->name) == 0) {
+                            pre = all;
+                            all = tp;
+                            aa = 1;
+                            break;
+                        } else {
+                            tp = tp->same_level;
+                        }
                     }
                 }
                 if (aa == 0) {
