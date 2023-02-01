@@ -217,8 +217,8 @@ int main() {
             test(rwrite, PGSIZE, f, page, PGSIZE);
         }
         test(rseek, 0, f, 0, SEEK_SET);
-        printf("%d", j);
         test(rread, 1 MB, f, buf, 1 MB);
+        printf("%d", j);
         assert(memcmp(buf, ref, 1 MB) == 0);
     }
 
