@@ -170,7 +170,6 @@ int main() {
     succopen(fd[8 ], "/never/gonna/let/you/down", O_CREAT);
     succopen(fd[9 ], "/never/gonna/run", O_CREAT);
     succopen(fd[10], "/never/gonna/run/around", O_CREAT);
-    printf("1\n");
     succopen(fd[11], "/never/gonna/and", O_CREAT);
     succopen(fd[12], "/never/gonna/desert", O_CREAT);
     succopen(fd[13], "/never/gonna/desert/you", O_CREAT);
@@ -179,6 +178,7 @@ int main() {
     succopen(fd[16], "/never/gonna/make/you/cry", O_CREAT);
     succopen(fd[17], "/never/gonna/say", O_CREAT);
     succopen(fd[18], "/never/gonna/say/goodbye", O_CREAT);
+    printf("1\n");
     succopen(fd[19], "/never/gonna/tell", O_CREAT);
     succopen(fd[20], "/never/gonna/tell/a", O_CREAT);
     succopen(fd[21], "/never/gonna/tell/a/lie", O_CREAT);
