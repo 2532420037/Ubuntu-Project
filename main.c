@@ -97,7 +97,7 @@ int main() {
          "/00000000000000000000000000000001/00000000000000000000000000000002/"
          "00000000000000000000000000000003/00000000000000000000000000000004/"
          "00000000000000000000000000000005");
-    printf("1\n");
+
 #ifndef REF
     /* more than long */
     test(rmkdir, -1, "/000000000000000000000000000000001");
@@ -136,7 +136,7 @@ int main() {
     test(rmkdir, -1, "/never/gonna/and");
     test(rmkdir, 0, "/never/gonna/hurt");
     test(rmkdir, 0, "/never/gonna/hurt/you");
-
+    printf("1\n");
 #ifndef REF
     /* you can't escape this */
     /* not the same with linux syscall_open */
