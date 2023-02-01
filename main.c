@@ -311,9 +311,10 @@ int main() {
 
     /* sixth round */
     test(rrmdir, -1, "/never");
-    printf("1\n");
+
     /* can't have subdir in file */
     succopen(f, "/never", O_CREAT);
+    printf("1\n");
     test(rclose, 0, f);
     test(rmkdir, -1, "/never/gonna");
     test(rmkdir, -1, "/never/gonna/give");
