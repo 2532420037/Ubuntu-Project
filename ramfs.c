@@ -611,6 +611,7 @@ int rrmdir(const char *pathname) {
             } else {
                 up->same_level = all->same_level;
             }
+            free(all->name);
             free(all);
             (pre->nrde)--;
             all = &root;
@@ -758,6 +759,9 @@ int runlink(const char *pathname) {
               up->dirents = all->same_level;
           } else {
               up->same_level = all->same_level;
+          }
+          if (all->size != 0) {
+              free(all->content);
           }
           free(all);
           (pre->nrde)--;
