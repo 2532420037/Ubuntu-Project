@@ -118,7 +118,7 @@ int main() {
     test(rmkdir, 0,
          "/00000000000000000000000000000001/00000000000000000000000000000003/"
          "00000000000000000000000000000004/00000000000000000000000000000005");
-    printf("1\n");
+
 #ifndef REF
     /* more than long */
     test(rmkdir, -1, "/000000000000000000000000000000001");
@@ -193,7 +193,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-
+    printf("1\n");
     /* create one file, r/w randomly */
     int f;
     memset(ref, 0, 1 MB);
