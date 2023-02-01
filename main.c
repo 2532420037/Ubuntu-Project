@@ -58,6 +58,7 @@ int main() {
 
     /* short */
     test(rmkdir, 0, "/a/");
+    printf("1");
     test(rmkdir, 0, "/a/b/");
     test(rmkdir, 0, "/a/b/c");
     test(rmkdir, -1, "//a/b");
