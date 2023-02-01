@@ -131,7 +131,7 @@ int main() {
     /* not started with / */
     test(rmkdir, -1, "abcdefghijklmn");
 #endif
-
+    printf("1\n");
     /* a nice tree, haha */
     test(rmkdir, 0, "/never");
     test(rmkdir, 0, "/never/gonna");
@@ -206,7 +206,7 @@ int main() {
     /* check padding */
     test(rread, 1 MB, f, buf, 1 MB);
     assert(memcmp(buf, ref, 1 MB) == 0);
-    printf("1\n");
+
     uint8_t page[PGSIZE];
     for (int j = 0; j < 1024; j++) {
         for (int i = 0; i < 512; i++) {
