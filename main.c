@@ -173,7 +173,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-    printf("1\n");
+
     /* first round */
     test(rrmdir, -1, "/never");
     test(rrmdir, -1, "/never/gonna");
@@ -207,7 +207,7 @@ int main() {
        and
        desert you
     create and unlink files */
-
+    printf("1\n");
     int f = 0;
     succopen(f, "/never/gonna/give/you/up", O_CREAT | O_WRONLY);
     /* able to read and write */
