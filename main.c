@@ -161,7 +161,6 @@ int main() {
 #ifndef REF
     /* you can't escape this */
     succopen(fd[1 ], "/never", O_CREAT);
-    printf("1\n");
     succopen(fd[2 ], "/never/gonna", O_CREAT);
     succopen(fd[3 ], "/never/gonna/give", O_CREAT);
     succopen(fd[4 ], "/never/gonna/give/you", O_CREAT);
@@ -171,6 +170,7 @@ int main() {
     succopen(fd[8 ], "/never/gonna/let/you/down", O_CREAT);
     succopen(fd[9 ], "/never/gonna/run", O_CREAT);
     succopen(fd[10], "/never/gonna/run/around", O_CREAT);
+    printf("1\n");
     succopen(fd[11], "/never/gonna/and", O_CREAT);
     succopen(fd[12], "/never/gonna/desert", O_CREAT);
     succopen(fd[13], "/never/gonna/desert/you", O_CREAT);
