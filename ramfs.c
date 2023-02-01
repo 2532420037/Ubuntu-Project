@@ -184,6 +184,14 @@ int ropen(const char *pathname, int flags) {
   if ((JudgeResult == 2) || (JudgeResult == 3)) {
       int bb = -1;
       for (int i = 0; i < 4097; i++) {
+          if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+              fd_[i].f = NULL;
+              fd_[i].offset = -1;
+              fd_[i].flags = -1;
+              break;
+          }
+      }
+      for (int i = 0; i < 4097; i++) {
           if (fd_[i].f == NULL) {
               fd_[i].f = all;
               fd_[i].offset = -1;
@@ -309,6 +317,14 @@ int ropen(const char *pathname, int flags) {
       if ((flags == O_APPEND) || (flags == (O_APPEND | O_RDONLY)) || (flags == (O_APPEND | O_CREAT))) {
           int ee = -1;
           for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
+          for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
                   ee = i;
@@ -323,6 +339,14 @@ int ropen(const char *pathname, int flags) {
       }
       if (flags == (O_APPEND | O_WRONLY)) {
           int ee = -1;
+          for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
@@ -339,6 +363,14 @@ int ropen(const char *pathname, int flags) {
       if (flags == (O_APPEND | O_RDWR)) {
           int ee = -1;
           for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
+          for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
                   ee = i;
@@ -353,6 +385,14 @@ int ropen(const char *pathname, int flags) {
       }
       if ((flags == O_CREAT) || (flags == O_RDONLY) || (flags == (O_CREAT | O_TRUNC)) || (flags == (O_CREAT | O_RDONLY)) || (flags == (O_TRUNC | O_RDONLY))) {
           int ee = -1;
+          for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
@@ -369,6 +409,14 @@ int ropen(const char *pathname, int flags) {
       if ((flags == (O_CREAT | O_WRONLY)) || (flags == (O_RDONLY | O_WRONLY)) || (flags == (O_RDWR | O_WRONLY)) || (flags == O_WRONLY)) {
           int ee = -1;
           for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
+          for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
                   ee = i;
@@ -384,6 +432,14 @@ int ropen(const char *pathname, int flags) {
       if ((flags == (O_CREAT | O_RDWR)) || (flags == (O_RDONLY | O_RDWR)) || (flags == O_RDWR)) {
           int ee = -1;
           for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
+          for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
                   ee = i;
@@ -398,6 +454,14 @@ int ropen(const char *pathname, int flags) {
       }
       if (flags == (O_TRUNC | O_WRONLY)) {
           int ee = -1;
+          for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
@@ -417,6 +481,14 @@ int ropen(const char *pathname, int flags) {
       }
       if (flags == (O_TRUNC | O_RDWR)) {
           int ee = -1;
+          for (int i = 0; i < 4097; i++) {
+              if ((fd_[i].f != NULL) && (strcmp(fd_[i].f->name, all->name) == 0)) {
+                  fd_[i].f = NULL;
+                  fd_[i].offset = -1;
+                  fd_[i].flags = -1;
+                  break;
+              }
+          }
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
                   fd_[i].f = all;
