@@ -314,8 +314,8 @@ int main() {
 
     /* can't have subdir in file */
     succopen(f, "/never", O_CREAT);
-    printf("1\n");
     test(rclose, 0, f);
+    printf("1\n");
     test(rmkdir, -1, "/never/gonna");
     test(rmkdir, -1, "/never/gonna/give");
     test(rmkdir, -1, "/never/gonna/give/you");
