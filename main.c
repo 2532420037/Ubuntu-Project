@@ -207,7 +207,7 @@ int main() {
        and
        desert you
     create and unlink files */
-    printf("1\n");
+
     int f = 0;
     succopen(f, "/never/gonna/give/you/up", O_CREAT | O_WRONLY);
     /* able to read and write */
@@ -278,7 +278,7 @@ int main() {
     test(rrmdir, -1, "/never/gonna/and");
     test(rrmdir, -1, "/never/gonna/hurt");
     test(rrmdir, -1, "/never/gonna/hurt/you");
-
+    printf("1\n");
     /* fourth round */
     test(rrmdir, -1, "/never");
     test(rrmdir, 0, "/never/gonna");
