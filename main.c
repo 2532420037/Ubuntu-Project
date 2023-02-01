@@ -188,7 +188,6 @@ int main() {
         test(rread, -1, fd[i], buf, 0);
         test(rwrite, -1, fd[i], buf, 0);
         test(rclose, 0, fd[i]);
-        printf("1\n");
         /* read, write illegal fd */
         test(rread, -1, fd[i], buf, 0);
         test(rwrite, -1, fd[i], buf, 0);
