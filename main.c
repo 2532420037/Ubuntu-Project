@@ -136,7 +136,7 @@ int main() {
     test(rmkdir, -1, "/never/gonna/and");
     test(rmkdir, 0, "/never/gonna/hurt");
     test(rmkdir, 0, "/never/gonna/hurt/you");
-    printf("1\n");
+
 #ifndef REF
     /* you can't escape this */
     /* not the same with linux syscall_open */
@@ -173,7 +173,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-
+    printf("1\n");
     /* first round */
     test(rrmdir, -1, "/never");
     test(rrmdir, -1, "/never/gonna");
