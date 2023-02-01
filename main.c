@@ -184,11 +184,11 @@ int main() {
     succopen(fd[22], "/never/gonna/and", O_CREAT);
     succopen(fd[23], "/never/gonna/hurt", O_CREAT);
     succopen(fd[0 ], "/never/gonna/hurt/you", O_CREAT);
-    printf("1\n");
     for (int i = 0; i < 24; i++) {
         test(rread, -1, fd[i], buf, 0);
         test(rwrite, -1, fd[i], buf, 0);
         test(rclose, 0, fd[i]);
+        printf("1\n");
         /* read, write illegal fd */
         test(rread, -1, fd[i], buf, 0);
         test(rwrite, -1, fd[i], buf, 0);
