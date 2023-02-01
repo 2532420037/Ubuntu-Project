@@ -316,7 +316,6 @@ int main() {
     succopen(f, "/never", O_CREAT);
     test(rclose, 0, f);
     test(rmkdir, -1, "/never/gonna");
-    printf("1\n");
     test(rmkdir, -1, "/never/gonna/give");
     test(rmkdir, -1, "/never/gonna/give/you");
     test(rrmdir, -1, "/never/gonna");
