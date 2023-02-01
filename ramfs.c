@@ -534,7 +534,7 @@ off_t rseek(int fd, off_t offset, int whence) {
       }
       if (whence == SEEK_END) {
           if (offset + fd_[fd].f->size - 1 >= 0) {
-              fd_[fd].offset = offset + fd_[fd].f->size - 1;
+              fd_[fd].offset = offset + fd_[fd].f->size;
               return fd_[fd].offset;
           } else {
               return -1;
