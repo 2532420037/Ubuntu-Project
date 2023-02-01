@@ -131,7 +131,7 @@ int main() {
     /* not started with / */
     test(rmkdir, -1, "abcdefghijklmn");
 #endif
-    printf("1\n");
+
     /* a nice tree, haha */
     test(rmkdir, 0, "/never");
     test(rmkdir, 0, "/never/gonna");
@@ -193,7 +193,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-
+    printf("1\n");
     /* create one file, r/w randomly */
     int f;
     memset(ref, 0, 1 MB);
