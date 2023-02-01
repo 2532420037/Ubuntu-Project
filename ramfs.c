@@ -11,12 +11,13 @@ typedef struct node { //节点
     int nrde; // number of subentries for dir
     int size; // size of file
     char *name; // it's short name
+    struct node *same_level;
 } node;
 
 node root; //根文件
 
 node *all = &root; //全局指针
-node *pre;
+node *pre = NULL;
 
 typedef struct FD { //文件描述符
     int offset;
@@ -83,19 +84,29 @@ int JudgeOfPathname(const char *pathname) { //判断pathname的合法性
         if (num1 == 0) {
             return 3;
         } else if (num1 == 1) {
+            if (all->nrde == 0) {
+                if (pathname[strlen(pathname) - 1] != '/') {
+                    return -1;
+                } else {
+                    return -2;
+                }
+            }
+            node *tp = all->dirents;
             for (int i = 0; i < all->nrde; i++) {
-                if (strcmp(name[0], all->dirents[i].name) == 0) {
-                    if ((all->dirents[i].type == FILE_NODE) && (pathname[strlen(pathname) - 1] != '/')) {
+                if (strcmp(name[0], tp->name) == 0) {
+                    if ((tp->type == FILE_NODE) && (pathname[strlen(pathname) - 1] != '/')) {
                         pre = all;
-                        all = &(all->dirents[i]);
+                        all = tp;
                         return 1;
-                    } else if (all->dirents[i].type == DIR_NODE) {
+                    } else if (tp->type == DIR_NODE) {
                         pre = all;
-                        all = &(all->dirents[i]);
+                        all = tp;
                         return 2;
                     } else {
                         return 0;
                     }
+                } else {
+                    tp = tp->same_level;
                 }
             }
             if (pathname[strlen(pathname) - 1] != '/') {
@@ -106,12 +117,26 @@ int JudgeOfPathname(const char *pathname) { //判断pathname的合法性
         } else {
             for (int i = 0; i < num1; i++) {
                 int aa = 0;
+                if (all->nrde == 0) {
+                    if (i == num1 - 1) {
+                        if (pathname[strlen(pathname) - 1] != '/') {
+                            return -1;
+                        } else {
+                            return -2;
+                        }
+                    } else {
+                        return 0;
+                    }
+                }
+                node *tp = all->dirents;
                 for (int j = 0; j < all->nrde; j++) {
-                    if (strcmp(name[i], all->dirents[j].name) == 0) {
+                    if (strcmp(name[i], tp->name) == 0) {
                         pre = all;
-                        all = &(all->dirents[j]);
+                        all = tp;
                         aa = 1;
                         break;
+                    } else {
+                        tp = tp->same_level;
                     }
                 }
                 if (aa == 0) {
@@ -142,6 +167,7 @@ int ropen(const char *pathname, int flags) {
   int JudgeResult = JudgeOfPathname(pathname);
   if ((JudgeResult == 0) || (JudgeResult == -2)) {
       all = &root;
+      pre = NULL;
       return -1;
   }
   if ((JudgeResult == 2) || (JudgeResult == 3)) {
@@ -156,67 +182,35 @@ int ropen(const char *pathname, int flags) {
           }
       }
       all = &root;
+      pre = NULL;
       return bb;
   }
-  /*
-   * for (int i = 0; i < all->nrde; i++) {
-              if (all->dirents[i] == NULL) {
-                  node *new = malloc(sizeof *new);
-                  if (new == NULL) {
-                      printf("Error: malloc failed in Append\n");
-                      all = &root;
-                      return -1;
-                  }
-                  new->type = FILE_NODE;
-                  for (int j = 0; j < 100; j++) {
-                      new->dirents[j] = NULL;
-                  }
-                  new->content = malloc(sizeof new->content);
-                  strcpy(new->content, "\0");
-                  new->nrde = -1;
-                  new->size = 0;
-                  int cc = -1;
-                  for (int j = 0; j < strlen(pathname) - 1; j++) {
-                      if (pathname[j] == '/' && pathname[j + 1] != '/') {
-                          cc = j + 1;
-                      }
-                  }
-                  new->name = malloc(strlen(pathname) - cc + 1);
-                  for (int j = cc; j < strlen(pathname); j++) {
-                      new->name[j - cc] = pathname[j];
-                  }
-                  new->name[strlen(pathname) - cc] = '\0';
-                  all->dirents[i] = new;
-                  all = new;
-                  break;
-              }
-          }
-   */
   if (JudgeResult == -1) {
       if ((flags == O_CREAT) || (flags == (O_CREAT | O_RDONLY))) {
           (all->nrde)++;
-          node *tem = realloc(all->dirents, (all->nrde) * sizeof(*tem));
-          all->dirents = tem;
-          all->dirents[all->nrde - 1].type = FILE_NODE;
-          all->dirents[all->nrde - 1].dirents = NULL;
-          all->dirents[all->nrde - 1].content = NULL;
-          all->dirents[all->nrde - 1].nrde = -1;
-          all->dirents[all->nrde - 1].size = 0;
+          node *new = malloc(sizeof(*new));
+          new->type = FILE_NODE;
+          new->dirents = NULL;
+          new->content = NULL;
+          new->nrde = -1;
+          new->size = 0;
           int cc = -1;
           for (int j = 0; j < strlen(pathname) - 1; j++) {
               if (pathname[j] == '/' && pathname[j + 1] != '/') {
                   cc = j + 1;
               }
           }
-          all->dirents[all->nrde - 1].name = malloc(strlen(pathname) - cc + 1);
+          new->name = malloc(strlen(pathname) - cc + 1);
           for (int j = cc; j < strlen(pathname); j++) {
-              all->dirents[all->nrde - 1].name[j - cc] = pathname[j];
+              new->name[j - cc] = pathname[j];
           }
-          all->dirents[all->nrde - 1].name[strlen(pathname) - cc] = '\0';
+          new->name[strlen(pathname) - cc] = '\0';
+          new->same_level = all->dirents;
+          all->dirents = new;
           int dd = -1;
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
-                  fd_[i].f = all;
+                  fd_[i].f = new;
                   dd = i;
                   break;
               }
@@ -224,31 +218,33 @@ int ropen(const char *pathname, int flags) {
           fd_[dd].offset = 0;
           fd_[dd].flags = 0;
           all = &root;
+          pre = NULL;
           return dd;
       } else if (flags == (O_CREAT | O_WRONLY)) {
           (all->nrde)++;
-          node *tem = realloc(all->dirents, (all->nrde) * sizeof(*tem));
-          all->dirents = tem;
-          all->dirents[all->nrde - 1].type = FILE_NODE;
-          all->dirents[all->nrde - 1].dirents = NULL;
-          all->dirents[all->nrde - 1].content = NULL;
-          all->dirents[all->nrde - 1].nrde = -1;
-          all->dirents[all->nrde - 1].size = 0;
+          node *new = malloc(sizeof(*new));
+          new->type = FILE_NODE;
+          new->dirents = NULL;
+          new->content = NULL;
+          new->nrde = -1;
+          new->size = 0;
           int cc = -1;
           for (int j = 0; j < strlen(pathname) - 1; j++) {
               if (pathname[j] == '/' && pathname[j + 1] != '/') {
                   cc = j + 1;
               }
           }
-          all->dirents[all->nrde - 1].name = malloc(strlen(pathname) - cc + 1);
+          new->name = malloc(strlen(pathname) - cc + 1);
           for (int j = cc; j < strlen(pathname); j++) {
-              all->dirents[all->nrde - 1].name[j - cc] = pathname[j];
+              new->name[j - cc] = pathname[j];
           }
-          all->dirents[all->nrde - 1].name[strlen(pathname) - cc] = '\0';
+          new->name[strlen(pathname) - cc] = '\0';
+          new->same_level = all->dirents;
+          all->dirents = new;
           int dd = -1;
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
-                  fd_[i].f = all;
+                  fd_[i].f = new;
                   dd = i;
                   break;
               }
@@ -256,31 +252,33 @@ int ropen(const char *pathname, int flags) {
           fd_[dd].offset = 0;
           fd_[dd].flags = 1;
           all = &root;
+          pre = NULL;
           return dd;
       } else if (flags == (O_CREAT | O_RDWR)) {
           (all->nrde)++;
-          node *tem = realloc(all->dirents, (all->nrde) * sizeof(*tem));
-          all->dirents = tem;
-          all->dirents[all->nrde - 1].type = FILE_NODE;
-          all->dirents[all->nrde - 1].dirents = NULL;
-          all->dirents[all->nrde - 1].content = NULL;
-          all->dirents[all->nrde - 1].nrde = -1;
-          all->dirents[all->nrde - 1].size = 0;
+          node *new = malloc(sizeof(*new));
+          new->type = FILE_NODE;
+          new->dirents = NULL;
+          new->content = NULL;
+          new->nrde = -1;
+          new->size = 0;
           int cc = -1;
           for (int j = 0; j < strlen(pathname) - 1; j++) {
               if (pathname[j] == '/' && pathname[j + 1] != '/') {
                   cc = j + 1;
               }
           }
-          all->dirents[all->nrde - 1].name = malloc(strlen(pathname) - cc + 1);
+          new->name = malloc(strlen(pathname) - cc + 1);
           for (int j = cc; j < strlen(pathname); j++) {
-              all->dirents[all->nrde - 1].name[j - cc] = pathname[j];
+              new->name[j - cc] = pathname[j];
           }
-          all->dirents[all->nrde - 1].name[strlen(pathname) - cc] = '\0';
+          new->name[strlen(pathname) - cc] = '\0';
+          new->same_level = all->dirents;
+          all->dirents = new;
           int dd = -1;
           for (int i = 0; i < 4097; i++) {
               if (fd_[i].f == NULL) {
-                  fd_[i].f = all;
+                  fd_[i].f = new;
                   dd = i;
                   break;
               }
@@ -288,9 +286,11 @@ int ropen(const char *pathname, int flags) {
           fd_[dd].offset = 0;
           fd_[dd].flags = 2;
           all = &root;
+          pre = NULL;
           return dd;
       } else {
           all = &root;
+          pre = NULL;
           return -1;
       }
   }
@@ -307,6 +307,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = (all->size) - 1;
           fd_[ee].flags = 0;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if (flags == (O_APPEND | O_WRONLY)) {
@@ -321,6 +322,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = (all->size) - 1;
           fd_[ee].flags = 1;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if (flags == (O_APPEND | O_RDWR)) {
@@ -335,6 +337,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = (all->size) - 1;
           fd_[ee].flags = 2;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if ((flags == O_CREAT) || (flags == O_RDONLY) || (flags == (O_CREAT | O_TRUNC)) || (flags == (O_CREAT | O_RDONLY)) || (flags == (O_TRUNC | O_RDONLY))) {
@@ -349,6 +352,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = 0;
           fd_[ee].flags = 0;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if ((flags == (O_CREAT | O_WRONLY)) || (flags == (O_RDONLY | O_WRONLY)) || (flags == (O_RDWR | O_WRONLY)) || (flags == O_WRONLY)) {
@@ -363,6 +367,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = 0;
           fd_[ee].flags = 1;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if ((flags == (O_CREAT | O_RDWR)) || (flags == (O_RDONLY | O_RDWR)) || (flags == O_RDWR)) {
@@ -377,6 +382,7 @@ int ropen(const char *pathname, int flags) {
           fd_[ee].offset = 0;
           fd_[ee].flags = 2;
           all = &root;
+          pre = NULL;
           return ee;
       }
       if (flags == (O_TRUNC | O_WRONLY)) {
@@ -390,9 +396,12 @@ int ropen(const char *pathname, int flags) {
           }
           fd_[ee].offset = 0;
           fd_[ee].flags = 1;
-          free(all->content);
-          all->content = NULL;
+          if (all->content != NULL) {
+              free(all->content);
+              all->content = NULL;
+          }
           all = &root;
+          pre = NULL;
           return ee;
       }
       if (flags == (O_TRUNC | O_RDWR)) {
@@ -406,12 +415,16 @@ int ropen(const char *pathname, int flags) {
           }
           fd_[ee].offset = 0;
           fd_[ee].flags = 2;
-          free(all->content);
-          all->content = NULL;
+          if (all->content != NULL) {
+              free(all->content);
+              all->content = NULL;
+          }
           all = &root;
+          pre = NULL;
           return ee;
       }
       all = &root;
+      pre = NULL;
       return -1;
   }
 }
@@ -476,10 +489,16 @@ ssize_t rread(int fd, void *buf, size_t count) {
   }
   if ((fd_[fd].f != NULL) && (fd_[fd].f->type == FILE_NODE) && ((fd_[fd].flags == 0) || (fd_[fd].flags == 2))) {
       int gg;
+      if (fd_[fd].offset > fd_[fd].f->size) {
+          return -1;
+      }
       if (fd_[fd].offset + count > fd_[fd].f->size) {
           gg = fd_[fd].f->size - fd_[fd].offset;
       } else {
           gg = count;
+      }
+      if (gg <= 0) {
+          return -1;
       }
       char *tem = malloc(gg * sizeof (char));
       for (int i = fd_[fd].offset; i < fd_[fd].offset + gg; i++) {
@@ -532,13 +551,12 @@ int rmkdir(const char *pathname) {
     int JudgeResult = JudgeOfPathname(pathname);
     if ((JudgeResult == -1) || (JudgeResult == -2)) {
         (all->nrde)++;
-        node *tem = realloc(all->dirents, (all->nrde) * sizeof(*tem));
-        all->dirents = tem;
-        all->dirents[all->nrde - 1].type = DIR_NODE;
-        all->dirents[all->nrde - 1].dirents = NULL;
-        all->dirents[all->nrde - 1].content = NULL;
-        all->dirents[all->nrde - 1].nrde = 0;
-        all->dirents[all->nrde - 1].size = -1;
+        node *new = malloc(sizeof (*new));
+        new->type = DIR_NODE;
+        new->dirents = NULL;
+        new->content = NULL;
+        new->nrde = 0;
+        new->size = -1;
         int cc = -1;
         for (int j = 0; j < strlen(pathname) - 1; j++) {
             if (pathname[j] == '/' && pathname[j + 1] != '/') {
@@ -552,22 +570,65 @@ int rmkdir(const char *pathname) {
                 break;
             }
         }
-        all->dirents[all->nrde - 1].name = malloc(dd - cc + 2);
+        new->name = malloc(dd - cc + 2);
         for (int j = cc; j <= dd; j++) {
-            all->dirents[all->nrde - 1].name[j - cc] = pathname[j];
+            new->name[j - cc] = pathname[j];
         }
-        all->dirents[all->nrde - 1].name[dd - cc + 1] = '\0';
+        new->name[dd - cc + 1] = '\0';
+        new->same_level = all->dirents;
+        all->dirents = new;
         all = &root;
+        pre = NULL;
         return 0;
     } else {
         all = &root;
+        pre = NULL;
         return -1;
     }
 }
 
 int rrmdir(const char *pathname) {
-  // TODO();
-  if (JudgeOfPathname(pathname) == 2) {
+    // TODO();
+    if (JudgeOfPathname(pathname) == 2) {
+        if (all->nrde == 0) {
+            int ss = 1;
+            node *up = pre->dirents;
+            if (strcmp(up->name, all->name) == 0) {
+                up = pre;
+                ss = 0;
+            }
+            if (ss == 1) {
+                for (int i = 0; i < pre->nrde - 1; i++) {
+                    if (strcmp(up->same_level->name, all->name) == 0) {
+                        break;
+                    } else {
+                        up = up->same_level;
+                    }
+                }
+            }
+            if (ss == 0) {
+                up->dirents = all->same_level;
+            } else {
+                up->same_level = all->same_level;
+            }
+            free(all);
+            (pre->nrde)--;
+            all = &root;
+            pre = NULL;
+            return 0;
+        } else {
+            all = &root;
+            pre = NULL;
+            return -1;
+        }
+    } else {
+        all = &root;
+        pre = NULL;
+        return -1;
+    }
+}
+
+  /*if (JudgeOfPathname(pathname) == 2) {
       if (all->nrde == 0) {
           int gg = -1;
           for (int i = 0; i < pre->nrde; i++) {
@@ -672,12 +733,46 @@ int rrmdir(const char *pathname) {
       all = &root;
       pre = NULL;
       return -1;
-  }
-}
+  }*/
+
 
 int runlink(const char *pathname) {
-  // TODO();
-    if (JudgeOfPathname(pathname) == 1) {
+      // TODO();
+      if (JudgeOfPathname(pathname) == 1) {
+          int ss = 1;
+          node *up = pre->dirents;
+          if (strcmp(up->name, all->name) == 0) {
+              up = pre;
+              ss = 0;
+          }
+          if (ss == 1) {
+              for (int i = 0; i < pre->nrde - 1; i++) {
+                  if (strcmp(up->same_level->name, all->name) == 0) {
+                      break;
+                  } else {
+                      up = up->same_level;
+                  }
+              }
+          }
+          if (ss == 0) {
+              up->dirents = all->same_level;
+          } else {
+              up->same_level = all->same_level;
+          }
+          free(all);
+          (pre->nrde)--;
+          all = &root;
+          pre = NULL;
+          return 0;
+
+      } else {
+          all = &root;
+          pre = NULL;
+          return -1;
+      }
+  }
+
+    /*if (JudgeOfPathname(pathname) == 1) {
         int gg = -1;
         for (int i = 0; i < pre->nrde; i++) {
             if (strcmp(pre->dirents[i].name, all->name) == 0) {
@@ -779,8 +874,8 @@ int runlink(const char *pathname) {
         all = &root;
         pre = NULL;
         return -1;
-    }
-}
+    }*/
+
 
 void init_ramfs() {
   // TODO();
@@ -790,6 +885,7 @@ void init_ramfs() {
   root.nrde = 0;
   root.size = -1;
   root.name = "/";
+  root.same_level = NULL;
   for (int i = 0; i < 4097; i++) {
       fd_[i].offset = -1;
       fd_[i].flags = -1;
