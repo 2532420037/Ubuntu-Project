@@ -193,7 +193,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-    printf("1\n");
+
     /* create one file, r/w randomly */
     int f;
     memset(ref, 0, 1 MB);
@@ -206,7 +206,7 @@ int main() {
     /* check padding */
     test(rread, 1 MB, f, buf, 1 MB);
     assert(memcmp(buf, ref, 1 MB) == 0);
-
+    printf("1\n");
     uint8_t page[PGSIZE];
     for (int j = 0; j < 1024; j++) {
         for (int i = 0; i < 512; i++) {
