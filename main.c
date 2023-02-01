@@ -304,7 +304,7 @@ int main() {
     test(rrmdir, -1, "/never/gonna/and");
     test(rrmdir, -1, "/never/gonna/hurt");
     test(rrmdir, -1, "/never/gonna/hurt/you");
-
+    printf("1\n");
     /* fifth round */
     test(rrmdir, 0, "/never");
     test(rrmdir, -1, "/never/gonna");
@@ -321,7 +321,7 @@ int main() {
     test(rrmdir, -1, "/never/gonna");
     test(rrmdir, -1, "/never/gonna/give");
     test(rrmdir, -1, "/never/gonna/give/you");
-    printf("1\n");
+
     puts("true");
 }
 
