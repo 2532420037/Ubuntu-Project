@@ -304,14 +304,14 @@ int main() {
     test(rrmdir, -1, "/never/gonna/and");
     test(rrmdir, -1, "/never/gonna/hurt");
     test(rrmdir, -1, "/never/gonna/hurt/you");
-    printf("1\n");
+
     /* fifth round */
     test(rrmdir, 0, "/never");
     test(rrmdir, -1, "/never/gonna");
 
     /* sixth round */
     test(rrmdir, -1, "/never");
-
+    printf("1\n");
     /* can't have subdir in file */
     succopen(f, "/never", O_CREAT);
     test(rclose, 0, f);
