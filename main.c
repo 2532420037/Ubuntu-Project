@@ -157,7 +157,7 @@ int main() {
     test(rmkdir, -1, "/never/gonna/and");
     test(rmkdir, 0, "/never/gonna/hurt");
     test(rmkdir, 0, "/never/gonna/hurt/you");
-
+    printf("1\n");
 #ifndef REF
     /* you can't escape this */
     succopen(fd[1 ], "/never", O_CREAT);
@@ -193,7 +193,7 @@ int main() {
         test(rwrite, -1, fd[i], buf, 0);
     }
 #endif
-    printf("1\n");
+
     /* create one file, r/w randomly */
     int f;
     memset(ref, 0, 1 MB);
