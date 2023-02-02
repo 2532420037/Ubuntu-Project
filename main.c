@@ -206,7 +206,7 @@ int main() {
     /* check padding */
     test(rread, 1 MB, f, buf, 1 MB);
     assert(memcmp(buf, ref, 1 MB) == 0);
-    printf("1\n");
+
     uint8_t page[PGSIZE];
     for (int j = 0; j < 1024; j++) {
         for (int i = 0; i < 512; i++) {
@@ -218,6 +218,7 @@ int main() {
         }
         test(rseek, 0, f, 0, SEEK_SET);
         test(rread, 1 MB, f, buf, 1 MB);
+        printf("1\n");
         assert(memcmp(buf, ref, 1 MB) == 0);
     }
 
