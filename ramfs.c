@@ -6,7 +6,7 @@
 
 typedef struct node { //节点
     enum { FILE_NODE, DIR_NODE } type;
-    struct nord *dirents; // if it's a dir, there's subentries
+    struct node *dirents; // if it's a dir, there's subentries
     void *content; // if it's a file, there's data content
     int nrde; // number of subentries for dir
     int size; // size of file
