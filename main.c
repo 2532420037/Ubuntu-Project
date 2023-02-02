@@ -218,7 +218,6 @@ int main() {
         }
         test(rseek, 0, f, 0, SEEK_SET);
         test(rread, 1 MB, f, buf, 1 MB);
-        printf("1\n");
         assert(memcmp(buf, ref, 1 MB) == 0);
     }
 

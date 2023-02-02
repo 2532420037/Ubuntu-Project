@@ -6,8 +6,8 @@
 
 typedef struct node { //节点
     enum { FILE_NODE, DIR_NODE } type;
-    struct node *dirents; // if it's a dir, there's subentries
-    char *content; // if it's a file, there's data content
+    struct nord *dirents; // if it's a dir, there's subentries
+    void *content; // if it's a file, there's data content
     int nrde; // number of subentries for dir
     int size; // size of file
     char *name; // it's short name
@@ -458,35 +458,21 @@ ssize_t rwrite(int fd, const void *buf, size_t count) {
       return -1;
   }
   if ((fd_[fd].f != NULL) && (fd_[fd].f->type == FILE_NODE) && ((fd_[fd].flags == 1) || (fd_[fd].flags == 2))) {
-      char *temp = malloc(count);
-      if (count <= strlen(buf)) {
-          memcpy(temp, buf, count);
-      } else {
-          memcpy(temp, buf, strlen(buf));
-          for (int i = strlen(buf); i < count; i++) {
-              temp[i] = '\0';
-          }
-      }
       if (fd_[fd].offset + count > fd_[fd].f->size) {
-          char *tem = realloc(fd_[fd].f->content, fd_[fd].offset + count);
-          for (int i = fd_[fd].offset; i < fd_[fd].offset + count; i++) {
-              tem[i] = temp[i - fd_[fd].offset];
-          }
+          void *tem = realloc(fd_[fd].f->content, fd_[fd].offset + count);
+          memcpy(tem + fd_[fd].offset, buf, count);
           if (fd_[fd].offset > fd_[fd].f->size) {
               for (int i = fd_[fd].f->size; i < fd_[fd].offset; i++) {
-                  tem[i] = '\0';
+                  memcpy(tem + i, "\0", 1);
               }
           }
           fd_[fd].f->size = fd_[fd].offset + count;
           fd_[fd].f->content = tem;
           fd_[fd].offset = fd_[fd].f->size;
       } else {
-          for (int i = fd_[fd].offset; i < fd_[fd].offset + count; i++) {
-              fd_[fd].f->content[i] = temp[i - fd_[fd].offset];
-          }
+          memcpy(fd_[fd].f->content + fd_[fd].offset, buf, count);
           fd_[fd].offset += count;
       }
-      free(temp);
       return count;
   } else {
       return -1;
@@ -511,13 +497,8 @@ ssize_t rread(int fd, void *buf, size_t count) {
       if (gg <= 0) {
           return -1;
       }
-      char *tem = malloc(gg * sizeof (char));
-      for (int i = fd_[fd].offset; i < fd_[fd].offset + gg; i++) {
-          tem[i - fd_[fd].offset] = fd_[fd].f->content[i];
-      }
-      memcpy(buf, tem, gg);
+      memcpy(buf, fd_[fd].f->content + fd_[fd].offset, gg);
       fd_[fd].offset += gg;
-      free(tem);
       return gg;
   } else {
       return -1;
