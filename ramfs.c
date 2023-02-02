@@ -315,7 +315,7 @@ int ropen(const char *pathname, int flags) {
                   break;
               }
           }
-          fd_[ee].offset = (all->size) - 1;
+          fd_[ee].offset = (all->size);
           fd_[ee].flags = 0;
           all = &root;
           pre = NULL;
@@ -330,7 +330,7 @@ int ropen(const char *pathname, int flags) {
                   break;
               }
           }
-          fd_[ee].offset = (all->size) - 1;
+          fd_[ee].offset = (all->size);
           fd_[ee].flags = 1;
           all = &root;
           pre = NULL;
@@ -345,7 +345,7 @@ int ropen(const char *pathname, int flags) {
                   break;
               }
           }
-          fd_[ee].offset = (all->size) - 1;
+          fd_[ee].offset = (all->size);
           fd_[ee].flags = 2;
           all = &root;
           pre = NULL;
